@@ -1,7 +1,54 @@
 /* ==========================================================================
-   HV PORTFOLIO — CINEMATIC INTERACTIVE CONTROLLER v2
+   HV PORTFOLIO — APP ENTRY POINT
+   Modular portfolio with separated data and sections.
    ========================================================================== */
 
+import { renderNavbar } from './components/Navbar.js';
+import { renderFooter } from './components/Footer.js';
+import { renderModals } from './components/Modals.js';
+import { renderHome } from './sections/Home.js';
+import { renderAbout } from './sections/About.js';
+import { renderSkills } from './sections/Skills.js';
+import { renderProjects } from './sections/Projects.js';
+import { renderExperience } from './sections/Experience.js';
+import { renderEducation } from './sections/Education.js';
+import { renderAchievements } from './sections/Achievements.js';
+import { renderCertifications } from './sections/Certifications.js';
+import { renderGitHub } from './sections/GitHub.js';
+import { renderContact } from './sections/Contact.js';
+import { homeData } from './data/homeData.js';
+import { projectsData } from './data/projectsData.js';
+import { certificationsData } from './data/certificationsData.js';
+
+/* -----------------------------------------------------------------------
+   RENDER ALL SECTIONS
+   ----------------------------------------------------------------------- */
+function renderApp() {
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    ${renderNavbar()}
+    <main>
+      ${renderHome()}
+      ${renderAbout()}
+      ${renderSkills()}
+      ${renderProjects()}
+      ${renderExperience()}
+      ${renderEducation()}
+      ${renderAchievements()}
+      ${renderCertifications()}
+      ${renderGitHub()}
+      ${renderContact()}
+    </main>
+    ${renderFooter()}
+    ${renderModals()}
+  `;
+}
+
+renderApp();
+
+/* -----------------------------------------------------------------------
+   INITIALIZE ALL INTERACTIVE BEHAVIOR
+   ----------------------------------------------------------------------- */
 document.addEventListener('DOMContentLoaded', () => {
 
   const isMobile = window.innerWidth < 768;
@@ -9,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* -----------------------------------------------------------------------
-     1. HEIST CINEMATIC INTRO SEQUENCE (5 PHASES — NO COUNTDOWN)
+     1. HEIST CINEMATIC INTRO SEQUENCE (5 PHASES)
      ----------------------------------------------------------------------- */
   const heistIntro = document.getElementById('heistIntro');
   const phase1 = document.getElementById('heistPhase1');
@@ -120,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
      3. TYPEWRITER ROLE ANIMATION
      ----------------------------------------------------------------------- */
   const roleTextElem = document.getElementById('roleText');
-  const roles = ['Problem Solver', 'AI/ML Enthusiast', 'Web Developer', 'Creative Developer', 'Tech Explorer'];
+  const roles = homeData.roles;
   let roleIdx = 0, charIdx = 0, isDeleting = false, typeSpeed = 100;
 
   function typeRole() {
@@ -235,17 +282,17 @@ document.addEventListener('DOMContentLoaded', () => {
      7. MOBILE MENU
      ----------------------------------------------------------------------- */
   const hamburger = document.getElementById('hamburgerBtn');
-  const navLinks = document.getElementById('navLinks');
+  const navLinksEl = document.getElementById('navLinks');
 
-  if (hamburger && navLinks) {
+  if (hamburger && navLinksEl) {
     hamburger.addEventListener('click', () => {
       hamburger.classList.toggle('active');
-      navLinks.classList.toggle('active');
+      navLinksEl.classList.toggle('active');
     });
     navLinkItems.forEach(item => {
       item.addEventListener('click', () => {
         hamburger.classList.remove('active');
-        navLinks.classList.remove('active');
+        navLinksEl.classList.remove('active');
       });
     });
   }
@@ -371,14 +418,6 @@ document.addEventListener('DOMContentLoaded', () => {
      10c. HEIST SCROLL-REACTIVE SECTION ATMOSPHERE
      ----------------------------------------------------------------------- */
   if (!prefersReducedMotion) {
-    const sectionAtmospheres = [
-      { selector: '#hero',    color: 'rgba(255,45,45,0.08)',   mix: 'normal' },
-      { selector: '#about',   color: 'rgba(112,0,255,0.06)',   mix: 'normal' },
-      { selector: '#skills',  color: 'rgba(0,102,255,0.05)',   mix: 'normal' },
-      { selector: '#projects', color: 'rgba(0,243,255,0.05)',  mix: 'normal' },
-      { selector: '#experience', color: 'rgba(255,45,45,0.04)', mix: 'normal' },
-      { selector: '#contact', color: 'rgba(255,45,45,0.07)',   mix: 'normal' }
-    ];
     const scanningLaser = document.getElementById('scanningLaser');
     const classifyMetas = document.querySelectorAll('.classified-meta');
 
@@ -581,29 +620,248 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* -----------------------------------------------------------------------
-     19. HEAT GRID
+     19. GITHUB SECTION — LIVE DATA INTEGRATION
      ----------------------------------------------------------------------- */
-  const heatGrid = document.getElementById('heatGrid');
-  if (heatGrid) {
-    const cols = window.innerWidth < 480 ? 20 : 45;
-    for (let c = 0; c < cols; c++) {
-      const col = document.createElement('div');
-      col.style.display = 'flex';
-      col.style.flexDirection = 'column';
-      col.style.gap = '4px';
-      for (let r = 0; r < 5; r++) {
-        const cell = document.createElement('div');
-        cell.classList.add('heat-cell');
-        const rand = Math.random();
-        if (rand > 0.85) cell.classList.add('l4');
-        else if (rand > 0.7) cell.classList.add('l3');
-        else if (rand > 0.5) cell.classList.add('l2');
-        else if (rand > 0.3) cell.classList.add('l1');
-        col.appendChild(cell);
+  const ghLoading = document.getElementById('githubLoading');
+  const ghError = document.getElementById('githubError');
+  const ghData = document.getElementById('githubData');
+  const ghRetryBtn = document.getElementById('githubRetryBtn');
+  const ghContainer = document.getElementById('githubContainer');
+  let ghInitialized = false;
+  let ghAllData = null;
+
+  function animateMetricNumber(el, target) {
+    if (!el) return;
+    const duration = 800;
+    const start = performance.now();
+    function tick(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(target * eased);
+      if (progress < 1) requestAnimationFrame(tick);
+      else el.textContent = target;
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function renderGitHubMetrics(data) {
+    animateMetricNumber(document.getElementById('metricRepos'), data.profile.publicRepos);
+    animateMetricNumber(document.getElementById('metricContributions'), data.contributions);
+    const projectCount = data.repos.filter(r => !r.fork && r.description).length || data.profile.publicRepos;
+    animateMetricNumber(document.getElementById('metricProjects'), projectCount);
+    animateMetricNumber(document.getElementById('metricLanguages'), data.languages.total);
+  }
+
+  function renderContributionGraph(calendar) {
+    const grid = document.getElementById('contributionGrid');
+    const months = document.getElementById('contributionMonths');
+    const total = document.getElementById('contributionTotal');
+    if (!grid || !months || !total) return;
+    grid.innerHTML = '';
+    months.innerHTML = '';
+
+    const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const monthWeeks = [];
+    let lastMonth = -1;
+    let weekCount = 0;
+
+    calendar.weeks.forEach((week) => {
+      const firstDay = week.find(d => d !== null);
+      if (firstDay) {
+        const m = firstDay.dateObj.getMonth();
+        if (m !== lastMonth) {
+          if (lastMonth !== -1) monthWeeks.push({ month: lastMonth, weeks: weekCount });
+          lastMonth = m;
+          weekCount = 0;
+        }
       }
-      heatGrid.appendChild(col);
+      weekCount++;
+    });
+    if (lastMonth !== -1) monthWeeks.push({ month: lastMonth, weeks: weekCount });
+
+    const cellPlusGap = 16;
+    monthWeeks.forEach((entry, i) => {
+      const span = document.createElement('span');
+      span.textContent = monthNames[entry.month];
+      const startWeek = monthWeeks.slice(0, i).reduce((s, e) => s + e.weeks, 0);
+      span.style.minWidth = (entry.weeks * cellPlusGap) + 'px';
+      months.appendChild(span);
+    });
+
+    calendar.weeks.forEach((week) => {
+      const weekEl = document.createElement('div');
+      weekEl.classList.add('contribution-week');
+      week.forEach((day) => {
+        const cell = document.createElement('div');
+        cell.classList.add('contribution-cell');
+        if (!day) {
+          cell.style.visibility = 'hidden';
+        } else {
+          const level = getContributionLevel(day.count);
+          cell.classList.add('level-' + level);
+          if (day.dateObj > new Date()) cell.classList.add('future');
+          cell.setAttribute('data-date', day.date);
+          cell.setAttribute('data-count', day.count);
+          cell.addEventListener('mouseenter', showContributionTooltip);
+          cell.addEventListener('mouseleave', hideContributionTooltip);
+        }
+        weekEl.appendChild(cell);
+      });
+      grid.appendChild(weekEl);
+    });
+
+    const count = calendar.totalContributions;
+    const yr = calendar.year;
+    total.innerHTML = '<strong>' + count.toLocaleString() + '</strong> contributions in ' + yr;
+  }
+
+  function getContributionLevel(count) {
+    if (count === 0) return 0;
+    if (count <= 2) return 1;
+    if (count <= 5) return 2;
+    if (count <= 10) return 3;
+    return 4;
+  }
+
+  let tooltipEl = null;
+  function getTooltip() {
+    if (!tooltipEl) {
+      tooltipEl = document.createElement('div');
+      tooltipEl.className = 'contribution-tooltip';
+      document.body.appendChild(tooltipEl);
+    }
+    return tooltipEl;
+  }
+
+  function showContributionTooltip(e) {
+    const tt = getTooltip();
+    const count = parseInt(e.target.getAttribute('data-count'), 10);
+    const dateStr = e.target.getAttribute('data-date');
+    const dateObj = new Date(dateStr + 'T00:00:00');
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const formatted = dateObj.toLocaleDateString('en-US', options);
+    const countText = count === 0 ? 'No contributions' : count + ' contribution' + (count !== 1 ? 's' : '');
+    tt.innerHTML = '<span class="tt-count">' + countText + '</span><span class="tt-date">' + formatted + '</span>';
+    tt.classList.add('visible');
+    positionTooltip(e);
+  }
+
+  function positionTooltip(e) {
+    const tt = getTooltip();
+    const rect = e.target.getBoundingClientRect();
+    tt.style.left = (rect.left + rect.width / 2) + 'px';
+    tt.style.top = (rect.top - 4) + 'px';
+  }
+
+  function hideContributionTooltip() {
+    if (tooltipEl) tooltipEl.classList.remove('visible');
+  }
+
+  function renderLanguages(languages) {
+    const container = document.getElementById('languagesList');
+    if (!container) return;
+    if (!languages.primary || languages.primary.length === 0) {
+      container.innerHTML = '<div class="github-empty-state">No language data available.</div>';
+      return;
+    }
+    const maxCount = languages.primary[0].count;
+    const langColors = {
+      Java: 'lang-color-java', Python: 'lang-color-python', JavaScript: 'lang-color-javascript',
+      HTML: 'lang-color-html', CSS: 'lang-color-css', C: 'lang-color-c', 'C++': 'lang-color-cpp',
+    };
+    container.innerHTML = languages.primary.map(lang => {
+      const pct = maxCount > 0 ? (lang.count / maxCount) * 100 : 0;
+      const colorClass = langColors[lang.name] || 'lang-color-default';
+      return '<div class="language-row">' +
+        '<span class="language-name">' + lang.name + '</span>' +
+        '<div class="language-bar"><div class="language-bar-fill ' + colorClass + '" style="width:0%" data-width="' + Math.round(pct) + '"></div></div>' +
+        '<span class="language-count">' + lang.count + '</span>' +
+      '</div>';
+    }).join('');
+    setTimeout(() => {
+      container.querySelectorAll('.language-bar-fill').forEach(bar => {
+        bar.style.width = bar.getAttribute('data-width') + '%';
+      });
+    }, 100);
+  }
+
+  function renderYearSelector(years, currentYear, onSelect) {
+    const container = document.getElementById('yearSelector');
+    if (!container) return;
+    container.innerHTML = '';
+    years.forEach(y => {
+      const btn = document.createElement('button');
+      btn.classList.add('year-btn');
+      if (y === currentYear) btn.classList.add('active');
+      btn.textContent = y;
+      btn.addEventListener('click', () => {
+        container.querySelectorAll('.year-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        onSelect(y);
+      });
+      container.appendChild(btn);
+    });
+  }
+
+  function showGitHubError() {
+    if (ghLoading) ghLoading.style.display = 'none';
+    if (ghError) ghError.style.display = 'flex';
+    if (ghData) ghData.style.display = 'none';
+  }
+
+  function showGitHubData() {
+    if (ghLoading) ghLoading.style.display = 'none';
+    if (ghError) ghError.style.display = 'none';
+    if (ghData) ghData.style.display = 'block';
+  }
+
+  function showGitHubLoading() {
+    if (ghLoading) ghLoading.style.display = 'flex';
+    if (ghError) ghError.style.display = 'none';
+    if (ghData) ghData.style.display = 'none';
+  }
+
+  async function initGitHubSection() {
+    if (ghInitialized) return;
+    ghInitialized = true;
+    showGitHubLoading();
+    try {
+      ghAllData = await GitHubService.fetchAll();
+      showGitHubData();
+      renderGitHubMetrics(ghAllData);
+      renderContributionGraph(ghAllData.calendar);
+      renderLanguages(ghAllData.languages);
+      renderYearSelector(ghAllData.availableYears, new Date().getFullYear(), (year) => {
+        const cal = GitHubService.buildContributionCalendar(ghAllData.events, year);
+        renderContributionGraph(cal);
+      });
+      const profileLink = document.getElementById('githubProfileLink');
+      if (profileLink) profileLink.href = ghAllData.profile.url;
+    } catch (err) {
+      console.error('GitHub fetch failed:', err);
+      showGitHubError();
     }
   }
+
+  if (ghRetryBtn) {
+    ghRetryBtn.addEventListener('click', () => {
+      ghInitialized = false;
+      ['gh_cache_profile', 'gh_cache_repos', 'gh_cache_events'].forEach(k => localStorage.removeItem(k));
+      initGitHubSection();
+    });
+  }
+
+  const ghObserver = new IntersectionObserver((entries, obs) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        initGitHubSection();
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  if (ghContainer) ghObserver.observe(ghContainer);
 
   /* -----------------------------------------------------------------------
      20. CONTACT FORM
@@ -623,39 +881,6 @@ document.addEventListener('DOMContentLoaded', () => {
   /* -----------------------------------------------------------------------
      21. PROJECT MODAL
      ----------------------------------------------------------------------- */
-  const projectData = {
-    agrient: {
-      title: 'AgriRent',
-      type: 'Web Platform',
-      description: 'Agricultural Equipment Rental System designed for farmers to search, compare, and reserve heavy farming machinery online easily. Built with responsive layout and modern design principles.',
-      problem: 'Farmers often struggle to access expensive farming equipment. AgriRent provides a digital marketplace connecting equipment owners with farmers who need temporary access.',
-      solution: 'Built a responsive web platform with search, filtering, and booking capabilities using modern HTML, CSS, and JavaScript.',
-      technologies: ['HTML', 'CSS', 'Tailwind CSS', 'JavaScript'],
-      features: ['Responsive Design', 'Equipment Search & Filter', 'Modern UI/UX', 'Mobile-First Approach'],
-      github: 'https://github.com/vaidyaharshit'
-    },
-    hotel: {
-      title: 'Hotel Room Booking Interface',
-      type: 'Web Interface',
-      description: 'A modern hotel booking website interface that allows users to easily explore hotels, check room availability, view prices and amenities, and make bookings through a clean, responsive, and user-friendly design.',
-      problem: 'Creating an intuitive hotel booking experience that handles complex room data while remaining visually appealing and easy to navigate.',
-      solution: 'Designed and built a clean, responsive booking interface with modern UI patterns and smooth interactions.',
-      technologies: ['HTML', 'CSS', 'JavaScript'],
-      features: ['Room Availability Display', 'Price Comparison', 'Amenity Listings', 'Responsive Layout'],
-      github: 'https://github.com/vaidyaharshit/hotel-room-booking-interface-.git'
-    },
-    portfolio: {
-      title: 'HV CyberPortfolio',
-      type: 'Developer Portfolio',
-      description: 'A high-end, futuristic developer portfolio website built with pure vanilla tech, glassmorphism, responsive grid layouts, custom cursor glow, and scroll animation mechanics.',
-      problem: 'Need a premium, interactive portfolio that showcases technical skills while maintaining performance and accessibility.',
-      solution: 'Built a fully animated, theme-switchable portfolio using only vanilla HTML, CSS, and JavaScript with no framework dependencies.',
-      technologies: ['HTML5', 'CSS3', 'Vanilla JS', 'Glassmorphism', 'Canvas'],
-      features: ['Dark/Light Theme', 'Custom Cursor', 'Scroll Animations', 'Particle Effects', 'Cinematic Intro', 'Responsive Design'],
-      github: 'https://github.com/vaidyaharshit'
-    }
-  };
-
   const projectModal = document.getElementById('projectModal');
   const modalBody = document.getElementById('modalBody');
   const modalClose = document.getElementById('modalClose');
@@ -663,23 +888,24 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.project-expand-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const key = btn.getAttribute('data-project');
-      const data = projectData[key];
-      if (!data || !modalBody) return;
+      const project = projectsData.projects.find(p => p.id === key);
+      if (!project || !modalBody) return;
+      const m = project.modal;
 
       modalBody.innerHTML = `
-        <h2>${data.title}</h2>
-        <span class="modal-type">${data.type}</span>
-        <p>${data.description}</p>
+        <h2>${project.title}</h2>
+        <span class="modal-type">${m.type}</span>
+        <p>${m.description}</p>
         <h4>Problem</h4>
-        <p>${data.problem}</p>
+        <p>${m.problem}</p>
         <h4>Solution</h4>
-        <p>${data.solution}</p>
+        <p>${m.solution}</p>
         <h4>Key Features</h4>
-        <div class="modal-tags">${data.features.map(f => `<span class="tag">${f}</span>`).join('')}</div>
+        <div class="modal-tags">${m.features.map(f => '<span class="tag">' + f + '</span>').join('')}</div>
         <h4>Technologies</h4>
-        <div class="modal-tags">${data.technologies.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+        <div class="modal-tags">${project.technologies ? project.technologies.map(t => '<span class="tag">' + t + '</span>').join('') : project.tags.map(t => '<span class="tag">' + t + '</span>').join('')}</div>
         <div class="modal-links">
-          <a href="${data.github}" target="_blank" rel="noopener" class="btn btn-sm btn-outline">
+          <a href="${project.github}" target="_blank" rel="noopener" class="btn btn-sm btn-outline">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
             <span>View Code</span>
           </a>
@@ -710,11 +936,6 @@ document.addEventListener('DOMContentLoaded', () => {
   /* -----------------------------------------------------------------------
      22. CERTIFICATE MODAL
      ----------------------------------------------------------------------- */
-  const certData = [
-    { name: 'AI & Machine Learning Fundamentals', org: 'YOUR_ORGANIZATION', date: '2026', note: 'This certificate covers fundamental concepts in artificial intelligence and machine learning, including supervised learning, neural networks, and data analysis techniques.' },
-    { name: 'Modern Web Development', org: 'YOUR_ORGANIZATION', date: '2026', note: 'This certification validates skills in modern web development including HTML5, CSS3, responsive design, and interactive JavaScript programming.' }
-  ];
-
   const certModal = document.getElementById('certModal');
   const certModalBody = document.getElementById('certModalBody');
   const certModalClose = document.getElementById('certModalClose');
@@ -723,7 +944,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const previewBtn = card.querySelector('.cert-preview-btn');
     if (previewBtn) {
       previewBtn.addEventListener('click', () => {
-        const data = certData[idx];
+        const data = certificationsData.items[idx];
         if (!data || !certModalBody) return;
         certModalBody.innerHTML = `
           <div class="cert-preview-icon">

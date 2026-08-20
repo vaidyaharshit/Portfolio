@@ -1,0 +1,7 @@
+{
+  "name": "hv-portfolio",
+  "version": "2.0.0",
+  "description": "Harshit's AI & ML Developer Portfolio",
+  "type": "module",
+  "private": true
+}
