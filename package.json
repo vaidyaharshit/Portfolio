@@ -3,5 +3,11 @@
   "version": "2.0.0",
   "description": "Harshit's AI & ML Developer Portfolio",
   "type": "module",
-  "private": true
+  "private": true,
+  "scripts": {
+    "dev": "npx -y serve . -l 3000",
+    "start": "npx -y serve . -l 3000",
+    "serve": "npx -y serve . -l 3000"
+  }
 }
+

@@ -180,8 +180,9 @@
   <!-- App Root: Navbar, Sections, Footer, Modals rendered here by app.js -->
   <div id="app"></div>
 
-  <script src="githubService.js"></script>
-  <script type="module" src="app.js"></script>
+  <!-- Runtime env config: must load before src/app.js -->
+  <script src="src/env.js"></script>
+  <script type="module" src="src/app.js"></script>
 </body>
 
 </html>
