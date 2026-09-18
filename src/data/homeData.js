@@ -1,13 +1,12 @@
 export const homeData = {
-  badge: 'AVAILABLE FOR INTERNSHIPS & TECH OPPORTUNITIES',
-  name: 'Harshit',
-  greeting: "Hi, I'm",
-  description:
-    "I'm a technology-driven student passionate about building intelligent, user-focused solutions and transforming innovative ideas into meaningful digital experiences.",
-  roles: ['Problem Solver', 'AI/ML Enthusiast', 'Web Developer', 'Creative Developer', 'Tech Explorer'],
+  introLabel: "HELLO, I'M",
+  name: 'Harshit Vaidya',
+  roleSubtitle: 'Web Developer | Student | Problem Solver',
+  bio: 'I build intelligent, modern, and user-focused digital experiences by combining Artificial Intelligence, Machine Learning, and Web Development.',
+  profileImage: '/profile/profile-photo.png',
   ctas: [
-    { text: 'View My Work', href: '#projects', type: 'primary', hasArrow: true },
-    { text: "Let's Connect", href: '#contact', type: 'secondary' },
+    { text: 'View Projects', href: '#projects', type: 'primary' },
+    { text: 'Contact Me', href: '#contact', type: 'secondary' },
   ],
   socials: [
     {
@@ -21,15 +20,14 @@ export const homeData = {
       icon: 'linkedin',
     },
     {
+      label: 'Instagram',
+      href: 'https://instagram.com',
+      icon: 'instagram',
+    },
+    {
       label: 'Email',
       href: 'mailto:harshitv.ml25@sbjit.edu.in',
       icon: 'email',
     },
   ],
-  floatingBadges: [
-    { icon: '\u{1F9E0}', title: 'AI / ML', sub: 'Algorithms & Models' },
-    { icon: '\u{1F4BB}', title: 'Web Dev', sub: 'Modern Web Apps' },
-    { icon: '\u26A1', title: 'Problem Solving', sub: 'Data & Logic' },
-  ],
-  scrollText: 'SCROLL TO EXPLORE',
 };

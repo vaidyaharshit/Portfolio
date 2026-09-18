@@ -1,11 +1,9 @@
-import { icons } from './icons.js';
-
 const navLinks = [
   { text: 'Home', href: '#home' },
   { text: 'About', href: '#about' },
   { text: 'Skills', href: '#skills' },
   { text: 'Projects', href: '#projects' },
-  { text: 'Experience', href: '#experience' },
+  { text: 'Education', href: '#education' },
   { text: 'Achievements', href: '#achievements' },
   { text: 'Contact', href: '#contact' },
 ];
@@ -13,9 +11,10 @@ const navLinks = [
 export function renderNavbar() {
   return `
     <header class="navbar" id="navbar">
-      <nav class="navbar-inner">
-        <a href="#home" class="nav-logo" aria-label="Home">
-          <span class="logo-bracket">&lt;</span><span class="logo-text">HV</span> <span class="logo-slash">/</span><span class="logo-bracket">&gt;</span>
+      <nav class="navbar-inner container">
+        <a href="#home" class="nav-logo" aria-label="Harshit Vaidya Home">
+          <span class="logo-badge">HV</span>
+          <span class="logo-name">Harshit Vaidya</span>
         </a>
 
         <ul class="nav-links" id="navLinks">
@@ -25,12 +24,9 @@ export function renderNavbar() {
         </ul>
 
         <div class="nav-actions">
-          <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-            ${icons.sun}
-            ${icons.moon}
-          </button>
-
-          <a href="#contact" class="btn btn-glow btn-sm nav-cta">Let's Connect</a>
+          <a href="#contact" class="btn btn-secondary btn-sm nav-resume-btn">
+            Resume
+          </a>
 
           <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
             <span></span><span></span><span></span>

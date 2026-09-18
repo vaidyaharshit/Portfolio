@@ -1,181 +1,72 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Harshit | AI & ML Developer Portfolio</title>
+
+  <meta name="google-site-verification" content="XXXXXXXXXXXXXXXX">
+
+  <title>Harshit Vaidya | Engineering Student | Portfolio</title>
+
   <meta name="description"
-    content="Personal portfolio of Harshit, B.Tech AI & ML Student & Developer specializing in Artificial Intelligence, Machine Learning, and Web Development.">
-  <meta name="theme-color" content="#070913">
+    content="Harshit Vaidya's personal portfolio showcasing projects, skills, education, certifications and achievements.">
+  <meta name="author" content="Harshit Vaidya">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://portfolio-pi-sooty-10.vercel.app/">
+  <meta name="theme-color" content="#FAFAFA">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://portfolio-pi-sooty-10.vercel.app/">
+  <meta property="og:title" content="Harshit Vaidya | Engineering Student | Portfolio">
+  <meta property="og:description"
+    content="Harshit Vaidya's personal portfolio showcasing projects, skills, education, certifications and achievements.">
+  <meta property="og:image" content="https://portfolio-pi-sooty-10.vercel.app/profile/profile-photo.png">
+  <meta property="og:site_name" content="Harshit Vaidya Portfolio">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://portfolio-pi-sooty-10.vercel.app/">
+  <meta name="twitter:title" content="Harshit Vaidya | Engineering Student | Portfolio">
+  <meta name="twitter:description"
+    content="Harshit Vaidya's personal portfolio showcasing projects, skills, education, certifications and achievements.">
+  <meta name="twitter:image" content="https://portfolio-pi-sooty-10.vercel.app/profile/profile-photo.png">
+
+  <!-- Structured Data: ProfilePage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    "dateCreated": "2024-01-01T00:00:00+00:00",
+    "dateModified": "2026-09-18T00:00:00+00:00",
+    "mainEntity": {
+      "@type": "Person",
+      "name": "Harshit Vaidya",
+      "alternateName": "Harshit",
+      "jobTitle": "Engineering Student",
+      "description": "Harshit Vaidya's personal portfolio showcasing projects, skills, education, certifications and achievements.",
+      "url": "https://portfolio-pi-sooty-10.vercel.app/",
+      "image": "https://portfolio-pi-sooty-10.vercel.app/profile/profile-photo.png",
+      "email": "mailto:harshitv.ml25@sbjit.edu.in",
+      "sameAs": [
+        "https://github.com/vaidyaharshit",
+        "https://www.linkedin.com/in/harshit-vaidya-6a3104384/"
+      ]
+    }
+  }
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
     rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-
-  <!-- Custom Cursor -->
-  <div class="cursor-dot" id="cursorDot"></div>
-  <div class="cursor-ring" id="cursorRing"></div>
-  <div class="cursor-label" id="cursorLabel"></div>
-  <canvas class="cursor-trail" id="cursorTrail"></canvas>
-
-  <!-- Theme Transition Overlay -->
-  <div class="theme-transition" id="themeTransition"></div>
-
-  <!-- Vertical Scroll Progress -->
-  <div class="scroll-progress-v" id="scrollProgressV">
-    <div class="spv-track">
-      <div class="spv-fill" id="scrollProgressFill"></div>
-      <div class="spv-dot" id="scrollProgressDot"></div>
-    </div>
-    <div class="spv-percent" id="scrollProgressPercent">0%</div>
-  </div>
-
-  <!-- ===== HEIST CINEMATIC INTRO ===== -->
-  <div class="heist-intro" id="heistIntro">
-    <div class="heist-grid-overlay"></div>
-    <div class="heist-scan-line"></div>
-
-    <!-- Phase 1: Dark System -->
-    <div class="heist-phase heist-phase-1 active" id="heistPhase1">
-      <div class="heist-terminal">
-        <div class="heist-term-line" id="heistLine1">
-          <span class="heist-term-bracket">[</span><span class="heist-term-label"> SYS </span><span
-            class="heist-term-bracket">]</span>
-          <span class="heist-term-text" id="heistType1"></span><span class="heist-term-cursor">_</span>
-        </div>
-        <div class="heist-term-line" id="heistLine2">
-          <span class="heist-term-bracket">[</span><span class="heist-term-label"> NET </span><span
-            class="heist-term-bracket">]</span>
-          <span class="heist-term-text" id="heistType2"></span><span class="heist-term-cursor">_</span>
-        </div>
-        <div class="heist-term-line" id="heistLine3">
-          <span class="heist-term-bracket accent">[</span><span class="heist-term-label accent"> ACCESS </span><span
-            class="heist-term-bracket accent">]</span>
-          <span class="heist-term-text accent" id="heistType3"></span><span class="heist-term-cursor accent">_</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Phase 2: Classified File -->
-    <div class="heist-phase heist-phase-2" id="heistPhase2">
-      <div class="heist-dossier">
-        <div class="heist-dossier-border"></div>
-        <div class="heist-dossier-corner heist-dc-tl"></div>
-        <div class="heist-dossier-corner heist-dc-tr"></div>
-        <div class="heist-dossier-corner heist-dc-bl"></div>
-        <div class="heist-dossier-corner heist-dc-br"></div>
-        <div class="heist-dossier-header">
-          <div class="heist-dossier-stamp">CLASSIFIED</div>
-          <div class="heist-dossier-subtitle">DIGITAL PROFILE</div>
-        </div>
-        <div class="heist-dossier-body">
-          <div class="heist-dossier-row">
-            <span class="heist-dossier-key">IDENTITY:</span>
-            <span class="heist-dossier-val">HARSHIT</span>
-          </div>
-          <div class="heist-dossier-row">
-            <span class="heist-dossier-key">ROLE:</span>
-            <span class="heist-dossier-val">DEVELOPER / PROBLEM SOLVER</span>
-          </div>
-          <div class="heist-dossier-row">
-            <span class="heist-dossier-key">STATUS:</span>
-            <span class="heist-dossier-val heist-val-green">AVAILABLE FOR OPPORTUNITIES</span>
-          </div>
-        </div>
-        <div class="heist-dossier-scan-beam"></div>
-        <div class="heist-dossier-data-stream">
-          <span>7x9f2a</span><span>b3c1d8</span><span>e5a0f4</span><span>2d7b6e</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Phase 3: Digital Scan -->
-    <div class="heist-phase heist-phase-3" id="heistPhase3">
-      <div class="heist-scan-container">
-        <div class="heist-scan-ring"></div>
-        <div class="heist-scan-ring heist-scan-ring-2"></div>
-        <div class="heist-scan-verified">IDENTITY VERIFIED</div>
-        <div class="heist-scan-check">
-          <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="var(--heist-red)" />
-            <polyline points="22 4 12 14.01 9 11.01" stroke="var(--heist-red)" />
-          </svg>
-        </div>
-      </div>
-    </div>
-
-    <!-- Phase 4: HV Reveal -->
-    <div class="heist-phase heist-phase-4" id="heistPhase4">
-      <div class="heist-logo-container">
-        <div class="heist-logo-scan"></div>
-        <div class="heist-logo-text" id="heistLogo">
-          <span class="heist-logo-bracket">&lt;</span>
-          <span class="heist-logo-hv">HV</span>
-          <span class="heist-logo-slash">/</span>
-          <span class="heist-logo-bracket">&gt;</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Phase 5: Transition (overlay that dissolves) -->
-    <div class="heist-phase heist-phase-5" id="heistPhase5"></div>
-  </div>
-
-  <!-- Animated Background -->
-  <div class="bg-canvas" id="bgCanvas">
-    <!-- Dark mode layers -->
-    <div class="bg-orb bg-orb-1"></div>
-    <div class="bg-orb bg-orb-2"></div>
-    <div class="bg-orb bg-orb-3"></div>
-    <div class="bg-orb bg-orb-4"></div>
-    <div class="bg-orb bg-orb-red"></div>
-    <div class="bg-grid"></div>
-    <div class="bg-noise"></div>
-    <canvas class="bg-particles" id="particlesCanvas"></canvas>
-    <div class="bg-glow" id="bgGlow"></div>
-    <div class="bg-light-ray bg-ray-1"></div>
-    <div class="bg-light-ray bg-ray-2"></div>
-    <!-- Light mode extra layers -->
-    <div class="bg-cloud bg-cloud-1"></div>
-    <div class="bg-cloud bg-cloud-2"></div>
-    <div class="bg-blob bg-blob-1"></div>
-    <div class="bg-blob bg-blob-2"></div>
-    <div class="bg-ray-diag bg-ray-d1"></div>
-    <div class="bg-ray-diag bg-ray-d2"></div>
-    <!-- Heist cinematic layers -->
-    <div class="heist-fog fog-1"></div>
-    <div class="heist-fog fog-2"></div>
-    <div class="heist-fog fog-3"></div>
-    <div class="security-grid"></div>
-    <div class="scanning-laser" id="scanningLaser"></div>
-    <div class="atmospheric-red"></div>
-    <div class="atmospheric-cyan"></div>
-    <div class="atmospheric-purple"></div>
-    <!-- HUD brackets -->
-    <div class="hud-bracket hud-tl"></div>
-    <div class="hud-bracket hud-tr"></div>
-    <div class="hud-bracket hud-bl"></div>
-    <div class="hud-bracket hud-br"></div>
-    <!-- Classified metadata -->
-    <div class="classified-meta meta-1">CLASSIFIED // DEV-OPS</div>
-    <div class="classified-meta meta-2">SEC-LEVEL: APEX</div>
-    <div class="classified-meta meta-3">OPERATION: PORTFOLIO</div>
-    <div class="classified-meta meta-4">STATUS: ACTIVE</div>
-    <div class="classified-meta meta-5">CLEARANCE: FULL</div>
-    <div class="classified-meta meta-6">SYS: ONLINE</div>
-    <!-- Watermarks -->
-    <div class="watermark-text watermark-1">CLASSIFIED</div>
-    <div class="watermark-text watermark-2">RESTRICTED</div>
-    <div class="watermark-text watermark-3">CONFIDENTIAL</div>
-  </div>
 
   <!-- App Root: Navbar, Sections, Footer, Modals rendered here by app.js -->
   <div id="app"></div>
